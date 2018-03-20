@@ -1,0 +1,7 @@
+invoice.invoices:
+ path: /invoices
+ defaults:
+  _controller: \Drupal\invoice\Controller\InvoiceController::
+  _title: 'Invoices'
+ requirements:
+  _permission: 'access content'
