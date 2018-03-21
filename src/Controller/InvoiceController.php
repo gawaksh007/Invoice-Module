@@ -1,3 +1,5 @@
+<?php
+
 /**
  * @file
  * Contains \Drupal\invoice\Controller\InvoiceController.
