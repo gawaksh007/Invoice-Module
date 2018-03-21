@@ -1,0 +1,23 @@
+access invoices:
+  title: 'Access Invoices'
+  description: 'Provides access to invoices'
+administer invoices:
+  title: 'Administer Invoices'
+  description: 'Provides the privilage to administer invoices'
+administer own invoices:
+  title: 'Administer own invoices'
+  description: 'Provides the privilage to administer own created invoices'    
+  restrict access: TRUE
+
+
+
+
+
+
+
+
+
+
+
+
+
