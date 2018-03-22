@@ -6,19 +6,19 @@
 setlocale(LC_MONETARY, variable_get('invoice_locale', 'en_US.utf8'));
 
 // Require classes
-require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_classes.inc';
+require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_classes.php';
 
 // Require AJAX functions
-require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_ajax.inc';
+require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_ajax.php';
 
 // Require form functions
 //Requres form to be built and according to drupal 8 standards. 
 
 // Require helper functions
-require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_helpers.inc';
+require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_helpers.php';
 
 // Require API functions
-require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_api.inc';
+require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_api.php';
 
 /**
  * Implements hook_node_info()
@@ -40,6 +40,8 @@ function invoice_node_info() {
 /**
  * Implements hook_menu()
  */
+
+/*
 function invoice_menu() {
   $items = array();
   $items['invoices'] = array(
@@ -166,6 +168,8 @@ function invoice_menu() {
   return $items;
 }
 
+*/
+
 /**
  * User access handler to support multiple permissions for a menu item
  *
@@ -200,7 +204,7 @@ function invoice_api_access_handler() {
 /**
  * Implements hook_perm()
  */
-function invoice_permission() {
+/*function invoice_permission() {
   return array(
     'access invoices' => array(
       'title' => t('Access invoices'),
@@ -216,6 +220,7 @@ function invoice_permission() {
     ),
   );
 }
+*/
 
 /**
  * Implements hook_init()
@@ -516,39 +521,39 @@ function invoice_settings_form_submit(&$form_state, $form) {
   $fv =& $form['values'];
 
   // Invoice specific settings
-  variable_set('invoice_locale', $fv['locale']);
-  variable_set('invoice_date_format', $fv['date_format']);
-  variable_set('invoice_vat', $fv['vat']);
-  variable_set('invoice_pay_limit', $fv['pay_limit']);
-  variable_set('invoice_invoice_number_zerofill', $fv['invoice_number_zerofill']);
-  variable_set('invoice_invoice_number_prefix', $fv['invoice_number_prefix']);
-  variable_set('invoice_default_template', $fv['default_template']);
+  \Drupal::state()->set('invoice_locale', $fv['locale']);
+  \Drupal::state()->set('invoice_date_format', $fv['date_format']);
+  \Drupal::state()->set('invoice_vat', $fv['vat']);
+  \Drupal::state()->set('invoice_pay_limit', $fv['pay_limit']);
+  \Drupal::state()->set('invoice_invoice_number_zerofill', $fv['invoice_number_zerofill']);
+  \Drupal::state()->set('invoice_invoice_number_prefix', $fv['invoice_number_prefix']);
+  \Drupal::state()->set('invoice_default_template', $fv['default_template']);
 
   // Display columns specific settings
-  variable_set('invoice_display_column_vat', $fv['display_column_vat']);
-  variable_set('invoice_display_column_exunitcost', $fv['display_column_exunitcost']);
-  variable_set('invoice_display_column_incunitcost', $fv['display_column_incunitcost']);
-  variable_set('invoice_display_column_extotal', $fv['display_column_extotal']);
-  variable_set('invoice_display_column_inctotal', $fv['display_column_inctotal']);
+  \Drupal::state()->set('invoice_display_column_vat', $fv['display_column_vat']);
+  \Drupal::state()->set('invoice_display_column_exunitcost', $fv['display_column_exunitcost']);
+  \Drupal::state()->set('invoice_display_column_incunitcost', $fv['display_column_incunitcost']);
+  \Drupal::state()->set('invoice_display_column_extotal', $fv['display_column_extotal']);
+  \Drupal::state()->set('invoice_display_column_inctotal', $fv['display_column_inctotal']);
 
   // Supplier specific settings
-  variable_set('invoice_supplier_company_name', $fv['supplier_company_name']);
-  variable_set('invoice_supplier_street', $fv['supplier_street']);
-  variable_set('invoice_supplier_building_number', $fv['supplier_building_number']);
-  variable_set('invoice_supplier_zipcode', $fv['supplier_zipcode']);
-  variable_set('invoice_supplier_city', $fv['supplier_city']);
-  variable_set('invoice_supplier_state', $fv['supplier_state']);
-  variable_set('invoice_supplier_country', $fv['supplier_country']);
-  variable_set('invoice_supplier_phone', $fv['supplier_phone']);
-  variable_set('invoice_supplier_fax', $fv['supplier_fax']);
-  variable_set('invoice_supplier_email', $fv['supplier_email']);
-  variable_set('invoice_supplier_web', $fv['supplier_web']);
-  variable_set('invoice_supplier_coc_number', $fv['supplier_coc_number']);
-  variable_set('invoice_supplier_vat_number', $fv['supplier_vat_number']);
+  \Drupal::state()->set('invoice_supplier_company_name', $fv['supplier_company_name']);
+  \Drupal::state()->set('invoice_supplier_street', $fv['supplier_street']);
+  \Drupal::state()->set('invoice_supplier_building_number', $fv['supplier_building_number']);
+  \Drupal::state()->set('invoice_supplier_zipcode', $fv['supplier_zipcode']);
+  \Drupal::state()->set('invoice_supplier_city', $fv['supplier_city']);
+  \Drupal::state()->set('invoice_supplier_state', $fv['supplier_state']);
+  \Drupal::state()->set('invoice_supplier_country', $fv['supplier_country']);
+  \Drupal::state()->set('invoice_supplier_phone', $fv['supplier_phone']);
+  \Drupal::state()->set('invoice_supplier_fax', $fv['supplier_fax']);
+  \Drupal::state()->set('invoice_supplier_email', $fv['supplier_email']);
+  \Drupal::state()->set('invoice_supplier_web', $fv['supplier_web']);
+  \Drupal::state()->set('invoice_supplier_coc_number', $fv['supplier_coc_number']);
+  \Drupal::state()->set('invoice_supplier_vat_number', $fv['supplier_vat_number']);
 
   // API specific settings
-  variable_set('invoice_api_allowed_ips', $fv['api_allowed_ips']);
-  variable_set('invoice_api_root_username', $fv['api_root_username']);
+  \Drupal::state()->set('invoice_api_allowed_ips', $fv['api_allowed_ips']);
+  \Drupal::state()->set('invoice_api_root_username', $fv['api_root_username']);
 
   $templates = _invoice_get_templates();
 
