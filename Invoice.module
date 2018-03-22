@@ -12,7 +12,7 @@ require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoic
 require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_ajax.inc';
 
 // Require form functions
-require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_form.inc';
+//Requres form to be built and according to drupal 8 standards. 
 
 // Require helper functions
 require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_helpers.inc';
