@@ -24,8 +24,8 @@ require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoic
  * Implements hook_node_info()
  */
 function invoice_node_info() {
-  return array(
-    'invoice' => array(
+  return [
+    'invoice' => [
       'name' => t('Invoice'),
       'base' => 'invoice',
       'description' => t("If you want to add an invoice, use this content type."),
@@ -33,8 +33,8 @@ function invoice_node_info() {
       'title_label' => t('Title'),
       'has_body' => TRUE,
       'body_label' => t('Body'),
-    )
-  );
+    ]
+  ];
 }
 
 /**
@@ -279,14 +279,14 @@ function invoice_node_access($node, $op, $account) {
  * @return array
  */
 function invoice_theme($existing, $type, $theme, $path) {
-  return array(
-    'invoice_body' => array(
-      'variables' => array('node' => NULL, 'type' => NULL),
-    ),
-    'invoice_markup' => array(
-      'variables' => array('s_fieldname' => NULL, 'value' => NULL, 's_title' => NULL),
-    )
-  );
+  return [
+    'invoice_body' => [
+      'variables' => ['node' => NULL, 'type' => NULL],
+    ],
+    'invoice_markup' => [
+      'variables' => ['s_fieldname' => NULL, 'value' => NULL, 's_title' => NULL],
+    ]
+  ];
 }
 
 /**
@@ -329,7 +329,7 @@ function invoice_load($nodes) {
     }
 
     // Calculate vat totals per different VAT percentage
-    $vattotals = array();
+    $vattotals = [];
 
     $result = db_query("SELECT vat, (quantity*unitcost)*((vat / 100) +1) * (1 - (1 / ((vat / 100) +1))) as vattotal
       FROM {invoice_items} WHERE invoice_id = :invoice_id", array(':invoice_id' => $invoice->invoice_number))->fetchAll();
@@ -337,9 +337,9 @@ function invoice_load($nodes) {
     // SUM all vat totals per different VAT percentage
     foreach ($result as $row) {
       if (!isset($vattotals[$row->vat])) {
-        $vattotals[$row->vat] = array(
+        $vattotals[$row->vat] = [
           'vattotal' => $row->vattotal,
-        );
+        ];
       }
       else {
         $vattotals[$row->vat]['vattotal'] += $row->vattotal;
@@ -359,7 +359,7 @@ function invoice_load($nodes) {
     $vattotal = _invoice_round($invoice->vattotal, 2);
 
     // Add general invoice information to the node object
-    $node->invoice = array(
+    $node->invoice = [
       'invoice_number' => $invoice->invoice_number,
       'formatted_invoice_number' =>
         _invoice_get_formatted_invoice_number($invoice->invoice_number, NULL, $node->created),
@@ -378,10 +378,10 @@ function invoice_load($nodes) {
       'formatted_inctotal' => _invoice_format_money($inctotal, 2),
       'formatted_created' =>
         format_date($node->created, 'custom', _invoice_get_variable($template, 'date_format')),
-    );
+    ];
 
     // Add customer information to the node object
-    $node->customer = array(
+    $node->customer = [
       'cid' => $invoice->cid,
       'customer_number' => $invoice->customer_number,
       'name' => null,
@@ -398,18 +398,18 @@ function invoice_load($nodes) {
       'coc_number' => $invoice->coc_number,
       'vat_number' => $invoice->vat_number,
       'description' => $invoice->customer_description,
-    );
+    ];
 
     // Add invoices items to the node object
-    $node->invoice_items = array();
+    $node->invoice_items = [];
 
     $result = db_query("SELECT * FROM {invoice_items}
-      WHERE invoice_id = :invoice_id ORDER BY weight ASC, created ASC, iid ASC", array(
-        ':invoice_id' => $invoice->invoice_number))->fetchAll();
+      WHERE invoice_id = :invoice_id ORDER BY weight ASC, created ASC, iid ASC", [
+        ':invoice_id' => ($invoice->invoice_number)]->fetchAll();
 
     foreach ($result as $row) {
       // Add invoice item row to the array
-      $node->invoice_items[] = array(
+      $node->invoice_items[] = [
         'iid' => $row->iid,
         'weight' => $row->weight,
         'description' => $row->description,
@@ -422,7 +422,7 @@ function invoice_load($nodes) {
         'formatted_extotal' => _invoice_round_and_format_money($row->quantity * $row->unitcost, 2),
         'formatted_inctotal' => _invoice_round_and_format_money($row->quantity * $row->unitcost *
           _invoice_vat_percent_to_decimal($row->vat), 2),
-      );
+      ];
     }
   }
 
@@ -506,7 +506,7 @@ function invoice_settings() {
   if (_invoice_round(38.675, 2) != 38.68) {
     drupal_set_message(t('TEST: The answer of _invoice_round(38.675, 2) must be 38.68, but is @answer!'
       .' This problem is maybe caused by your PHP version.',
-      array('@answer' => _invoice_round(38.675, 2))), 'error');
+      ['@answer' => _invoice_round(38.675, 2))), 'error'];
   }
 
   $content = '';
@@ -559,7 +559,7 @@ function invoice_settings_form_submit(&$form_state, $form) {
 
   foreach ($templates as $template) {
     $count = db_query("SELECT COUNT(*) FROM {invoice_templates} WHERE name = :name",
-      array(':name' => $template))->fetchField();
+      [':name' => $template])->fetchField();
     if ($count == 0) {
       db_insert('invoice_templates')->fields(array('name' => $template))->execute();
     }
@@ -568,7 +568,7 @@ function invoice_settings_form_submit(&$form_state, $form) {
     // overloading system. So numeric fields that are empty will take over the general setting
     // and update that in the database for this template.
     db_update('invoice_templates')
-      ->fields(array(
+      ->fields([
         'locale' => $fv[$template . '_locale'],
         'date_format' => $fv[$template . '_date_format'],
         'vat' => $fv[$template . '_vat'] != '' ? $fv[$template . '_vat'] : $fv['vat'],
@@ -597,7 +597,7 @@ function invoice_settings_form_submit(&$form_state, $form) {
         'display_column_extotal' => $count > 0 ? $fv[$template . '_display_column_extotal'] : 1,
         // set default value if we deal with a new template
         'display_column_inctotal' => $count > 0 ? $fv[$template . '_display_column_inctotal'] : 1,
-      ))
+      ])
       ->condition('name', $template)
       ->execute();
   }
@@ -613,7 +613,7 @@ function invoice_invoices() {
   $content = '';
 
   //Our header defenition
-  $header = array(
+  $header = [
     array('data' => t('Invoice #'), 'field' => 'ii.iid'),
     array('data' => t('Customer'), 'field' => 'c.customer'),
     array('data' => t('Total (ex)'), 'field' => 'extotal'),
