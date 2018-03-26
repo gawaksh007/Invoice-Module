@@ -1,7 +1,7 @@
 <?php
 
 
-require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_helpers.inc';
+require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'invoice') . '/invoice_helpers.php';
 
 function invoice_install() {
 
@@ -195,59 +195,63 @@ function invoice_schema() {
   return $schema;
 }
 
-/**
- * Implements hook_update_N()
- */
-function invoice_update_7003() {
-  db_change_field('invoice_items', 'weight', 'weight', array('type' => 'int', 'size' => 'tiny', 'unsigned' => FALSE, 'not null' => TRUE, 'default' => 0));
 
-  return t('Successfully set unsigned to false on invoice_items.weight column.');
-}
 
-/**
- * Implements hook_update_N()
- */
-function invoice_update_7002() {
-  db_add_field('invoice_templates', 'api_username', array('type' => 'varchar', 'length' => 100, 'not null' => FALSE));
+// /*
 
-  return t('Successfully added the api template column "api_username".');
-}
+// /**
+//  * Implements hook_update_N()
+//  */
+// function invoice_update_7003() {
+//   db_change_field('invoice_items', 'weight', 'weight', array('type' => 'int', 'size' => 'tiny', 'unsigned' => FALSE, 'not null' => TRUE, 'default' => 0));
 
-/**
- * Implements hook_update_N()
- */
-function invoice_update_7001() {
-  db_add_field('invoice_customers', 'state', array('type' => 'varchar', 'length' => 50, 'not null' => FALSE));
-  db_add_field('invoice_templates', 'supplier_state', array('type' => 'varchar', 'length' => 100, 'not null' => FALSE));
+//   return t('Successfully set unsigned to false on invoice_items.weight column.');
+// }
 
-  return t('Successfully added the customer and supplier state column.');
-}
+// /**
+//  * Implements hook_update_N()
+//  */
+// function invoice_update_7002() {
+//   db_add_field('invoice_templates', 'api_username', array('type' => 'varchar', 'length' => 100, 'not null' => FALSE));
 
-/**
- * Implements hook_update_N()
- */
-function invoice_update_7000() {
-  _invoice_set_content_type_settings();
+//   return t('Successfully added the api template column "api_username".');
+// }
 
-  $times = array();
+// /**
+//  * Implements hook_update_N()
+//  */
+// function invoice_update_7001() {
+//   db_add_field('invoice_customers', 'state', array('type' => 'varchar', 'length' => 50, 'not null' => FALSE));
+//   db_add_field('invoice_templates', 'supplier_state', array('type' => 'varchar', 'length' => 100, 'not null' => FALSE));
 
-  // Convert datetime data type of "created" column to integer
-  $result = db_query("SELECT iid, created FROM {invoice_items}")->fetchAll();
-  foreach ($result as $row) {
-    $time = strtotime($row->created);
-    $time = $time > 0 ? $time : 0;
-    $times[$row->iid] = $time;
-  }
+//   return t('Successfully added the customer and supplier state column.');
+// }
 
-  db_drop_field('invoice_items', 'created');
-  db_add_field('invoice_items', 'created', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
+// /**
+//  * Implements hook_update_N()
+//  */
+// function invoice_update_7000() {
+//   _invoice_set_content_type_settings();
 
-  foreach ($times as $item_id => $time) {
-    db_update('invoice_items')
-      ->fields(array('created' => $time))
-      ->condition('iid', $item_id)
-      ->execute();
-  }
+//   $times = array();
 
-  return t('Successfully updated the invoice module.');
-}
+//   // Convert datetime data type of "created" column to integer
+//   $result = db_query("SELECT iid, created FROM {invoice_items}")->fetchAll();
+//   foreach ($result as $row) {
+//     $time = strtotime($row->created);
+//     $time = $time > 0 ? $time : 0;
+//     $times[$row->iid] = $time;
+//   }
+
+//   db_drop_field('invoice_items', 'created');
+//   db_add_field('invoice_items', 'created', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
+
+//   foreach ($times as $item_id => $time) {
+//     db_update('invoice_items')
+//       ->fields(array('created' => $time))
+//       ->condition('iid', $item_id)
+//       ->execute();
+//   }
+
+//   return t('Successfully updated the invoice module.');
+// }

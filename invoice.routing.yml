@@ -5,3 +5,14 @@ invoice.invoices:
   _title: 'Invoices'
  requirements:
   _permission: 'access content'
+
+ invoice.config:
+  path: admin/config/system/invoice
+  defaults:
+  _form: \Drupal\invoice\Form\
+  _title: 'Invoices'
+  requirements:
+  _permission: 'access content'
+
+
+   
